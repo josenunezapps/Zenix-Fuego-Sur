@@ -1,8 +1,10 @@
-# Zenix Fuego Sur — AI Worker
+# Zenix Fuego Sur — AI Worker de respaldo
 
 Backend de interpretación de lenguaje para la demo Zenix Gastronomía.
 
-## Regla arquitectónica
+## Rol dentro de la arquitectura híbrida
+
+El frontend intenta resolver primero consultas claras con lógica determinística. Cuando hace falta lenguaje natural, intenta WebLLM en el navegador. Este Worker queda como **respaldo opcional** para dispositivos sin WebGPU, fallos de WebLLM o interpretaciones inciertas.
 
 La IA **no** calcula precios, descuentos, stock, horarios, zonas, disponibilidad, totales ni estados. Sólo devuelve intención, productos/cantidades detectados y si hace falta derivación humana.
 
@@ -48,13 +50,21 @@ npx wrangler login
 npm run deploy
 ```
 
-Después copiar la URL del Worker y colocarla en `/ai-config.js`:
+Después copiar la URL del Worker y colocarla en `/ai-config.js`, conservando la configuración local:
 
 ```js
 window.ZENIX_AI_CONFIG = {
-  endpoint: "https://TU-WORKER.workers.dev"
+  endpoint: "https://TU-WORKER.workers.dev",
+  localAI: {
+    enabled: true,
+    model: "Qwen2.5-0.5B-Instruct-q4f16_1-MLC",
+    webllmVersion: "0.2.85",
+    minDeviceMemoryGB: 4
+  }
 };
 ```
+
+Con `endpoint: ""`, Cloudflare no consume cuota y el sistema sigue usando motor determinístico + WebLLM cuando el dispositivo lo permite.
 
 ## Validación de Fase A
 
@@ -66,6 +76,6 @@ Con el Worker desplegado:
 AI_ENDPOINT=https://TU-WORKER.workers.dev npm run test:ai
 ```
 
-La Fase A no se considera cerrada hasta ejecutar y revisar esta batería.
+La Fase A no se considera cerrada hasta ejecutar y revisar esta batería y las pruebas integradas del frontend.
 
 Nunca guardar tokens o secretos en el repositorio.
