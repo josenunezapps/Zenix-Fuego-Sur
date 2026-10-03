@@ -56,4 +56,16 @@ window.ZENIX_AI_CONFIG = {
 };
 ```
 
+## Validación de Fase A
+
+Hay 50 casos en `tests/cases.json`: normales, mal escritos, ambiguos y fallidos.
+
+Con el Worker desplegado:
+
+```bash
+AI_ENDPOINT=https://TU-WORKER.workers.dev npm run test:ai
+```
+
+La Fase A no se considera cerrada hasta ejecutar y revisar esta batería.
+
 Nunca guardar tokens o secretos en el repositorio.
