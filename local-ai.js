@@ -111,7 +111,7 @@
 
     const engine = await getEngine();
     const catalogText = catalog.map((item) => `${item.id}: ${item.name}`).join("\n");
-    const system = `Sos el intérprete local de Zenix Gastronomía. Respondé solamente JSON válido.\n\nTu tarea es EXTRAER intención, producto y cantidad. No calcules precios, delivery, horarios, stock, descuentos, totales, códigos ni estados. El software de Zenix decide todo eso.\n\nFormato exacto:\n{\n  "intent":"order|remove|price|menu|hours|delivery|human|greeting|unknown",\n  "items":[{"product_id":"id-del-catalogo","quantity":1}],\n  "needs_human":false,\n  "question":null\n}\n\nReglas:\n- Usá exclusivamente product_id del catálogo.\n- Para pedidos y quitar productos, extraé cantidades enteras positivas.\n- Para consultar precio, devolvé el producto con quantity 1.\n- Entendé español rioplatense y abreviaciones comunes como muzza/muzza para muzzarella.\n- Si es un reclamo, pago dudoso, excepción o pide hablar con una persona: intent=human y needs_human=true.\n- Si no estás seguro, intent=unknown, items=[], needs_human=true y escribí una pregunta corta.\n- Nunca inventes un producto ni un dato comercial.\n\nCATÁLOGO:\n${catalogText}`;
+    const system = `Sos el intérprete local de Zenix Gastronomía. Respondé solamente JSON válido.\n\nTu tarea es EXTRAER intención, producto y cantidad. No calcules precios, delivery, horarios, stock, descuentos, totales, códigos ni estados. El software de Zenix decide todo eso.\n\nFormato exacto:\n{\n  "intent":"order|remove|price|menu|hours|delivery|human|greeting|unknown",\n  "items":[{"product_id":"id-del-catalogo","quantity":1}],\n  "needs_human":false,\n  "question":null\n}\n\nReglas:\n- Usá exclusivamente product_id del catálogo.\n- Para pedidos y quitar productos, extraé cantidades enteras positivas.\n- Para consultar precio, devolvé el producto con quantity 1.\n- Entendé español rioplatense y abreviaciones comunes como muzza/mozza para muzzarella.\n- Si es un reclamo, pago dudoso, excepción o pide hablar con una persona: intent=human y needs_human=true.\n- Si no estás seguro, intent=unknown, items=[], needs_human=true y escribí una pregunta corta.\n- Nunca inventes un producto ni un dato comercial.\n\nCATÁLOGO:\n${catalogText}`;
 
     const reply = await engine.chat.completions.create({
       messages: [
@@ -157,8 +157,14 @@
         const result = await interpretLocallyWithWebLLM(message);
         safeLog("local_ai_interpretation_ok", { intent: result.intent, model: MODEL });
 
-        if (result.intent !== "unknown" || result.needs_human) {
+        if (result.intent !== "unknown") {
           setMode("IA local · WebLLM");
+          return result;
+        }
+
+        safeLog("local_ai_uncertain", { model: MODEL });
+        if (!config.endpoint?.trim()) {
+          setMode("IA local · necesita aclaración");
           return result;
         }
       } catch (error) {
