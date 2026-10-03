@@ -1,0 +1,25 @@
+name: Prueba IA - 50 casos
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  probar-agente:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Descargar repositorio
+        uses: actions/checkout@v4
+
+      - name: Preparar Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Ejecutar 50 casos contra el Worker real
+        env:
+          AI_ENDPOINT: https://zenix-fuego-sur.josene242.workers.dev
+        run: node worker/tests/run.mjs
