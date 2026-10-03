@@ -1,6 +1,6 @@
 {
   "$schema": "node_modules/wrangler/config-schema.json",
-  "name": "zenix-fuego-sur-ai",
+  "name": "zenix-fuego-sur",
   "main": "worker/src/index.js",
   "compatibility_date": "2026-10-03",
   "ai": {
