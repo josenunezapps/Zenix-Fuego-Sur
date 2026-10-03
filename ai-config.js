@@ -1,3 +1,3 @@
 window.ZENIX_AI_CONFIG = {
-  endpoint: ""
+  endpoint: "https://zenix-fuego-sur.josene242.workers.dev"
 };
