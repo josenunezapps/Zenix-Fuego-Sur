@@ -8,14 +8,16 @@ Negocio ficticio creado como demostración comercial de **Zenix AR** siguiendo e
 
 La IA sólo interpreta intención, productos, cantidades y necesidad de derivación humana. Precios, delivery, totales, códigos y estados salen de lógica determinística.
 
-La estrategia de IA es híbrida y prioriza costo cero:
+La estrategia actual prioriza costo bajo y compatibilidad con cualquier celular o computadora:
 
-1. El motor local determinístico intenta resolver primero consultas simples y pedidos claros sin usar IA.
-2. Si el mensaje requiere interpretación, `local-ai.js` intenta usar **WebLLM** directamente en el navegador con el modelo `Qwen2.5-0.5B-Instruct-q4f16_1-MLC` cuando el dispositivo dispone de WebGPU y recursos suficientes.
-3. Si WebLLM no está disponible, falla o queda inseguro, puede usarse **Cloudflare Workers AI** como respaldo si hay un endpoint configurado.
-4. Si tampoco hay IA externa disponible, el sistema conserva el parser local y deriva los casos inciertos a una persona.
+1. El motor determinístico de Zenix intenta resolver primero consultas simples y pedidos claros sin usar IA.
+2. Sólo cuando el mensaje requiere comprensión adicional se llama al backend de IA.
+3. El backend preparado actualmente usa **Cloudflare Workers AI** como proveedor intercambiable.
+4. Si la IA externa no está disponible, el sistema conserva el parser local y deriva casos inciertos a una persona.
 
-El proveedor de IA sigue desacoplado: la lógica comercial no depende de WebLLM ni de Cloudflare.
+Se descartó WebLLM en el navegador para no depender de WebGPU, memoria o hardware moderno del cliente o del comercio.
+
+El proveedor de IA sigue desacoplado: la lógica comercial no depende de Cloudflare y puede reemplazarse en el futuro sin rehacer el motor del negocio.
 
 ## Incluye
 
@@ -29,30 +31,28 @@ El proveedor de IA sigue desacoplado: la lógica comercial no depende de WebLLM 
 - Panel con estados `Pendiente → Aceptado → Listo → Entregado` y rechazo.
 - Tiempo estimado configurable por el comercio.
 - Historial local de pedidos y eventos de diagnóstico.
-- IA local WebLLM cargada sólo cuando hace falta.
-- Backend `/worker` preparado como respaldo mediante Cloudflare Workers AI.
+- Backend `/worker` preparado para interpretación con Cloudflare Workers AI.
+- Respaldo local si la IA no está disponible.
 
 ## Configuración de IA
 
-`ai-config.js` controla la capa de IA:
+`ai-config.js` controla el endpoint remoto:
 
 ```js
 window.ZENIX_AI_CONFIG = {
-  endpoint: "",
-  localAI: {
-    enabled: true,
-    model: "Qwen2.5-0.5B-Instruct-q4f16_1-MLC",
-    webllmVersion: "0.2.85",
-    minDeviceMemoryGB: 4
-  }
+  endpoint: ""
 };
 ```
 
-Con `endpoint: ""`, Cloudflare no se usa. WebLLM puede seguir funcionando completamente en el dispositivo compatible.
+Mientras `endpoint` esté vacío, la demo no consume IA externa y usa únicamente el motor/parser local.
 
-Si después se despliega el Worker, se coloca su URL en `endpoint`. Cloudflare entonces queda como respaldo para dispositivos sin WebGPU, fallos del modelo local o interpretaciones inciertas.
+Cuando se despliegue el Worker, se coloca su URL en `endpoint`. A partir de ahí, los mensajes que realmente necesiten interpretación pueden usar la IA remota sin exigir hardware especial al dispositivo del usuario.
 
-La primera carga de WebLLM puede tardar porque el navegador debe descargar y guardar el modelo. Las siguientes cargas pueden reutilizar la caché del navegador.
+## Estrategia inicial de costo
+
+Para la etapa piloto se puede agrupar una cantidad pequeña de negocios por cuenta de Cloudflare y medir el consumo real. La IA debe usarse sólo cuando haga falta; menú, precios, cantidades, carrito, horarios, delivery, totales, confirmación y estados siguen resolviéndose por código normal.
+
+Si un negocio empieza a consumir mucho más que los demás, puede aislarse en su propia cuenta o proveedor sin cambiar el frontend ni el motor comercial.
 
 ## Validación
 
@@ -66,4 +66,4 @@ Fuego Sur es un negocio ficticio. Los productos, precios, promociones y horarios
 
 Frontend: GitHub Pages desde `main` y `/`.
 
-Backend opcional de respaldo: ver `worker/README.md`.
+Backend opcional de IA: ver `worker/README.md`.
