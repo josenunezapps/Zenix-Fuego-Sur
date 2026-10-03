@@ -5,8 +5,9 @@
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <meta name="theme-color" content="#14110f">
   <title>Fuego Sur Rotisería | Demo Zenix AR</title>
-  <meta name="description" content="Demo comercial de Zenix Gastronomía aplicada a una rotisería ficticia: menú, pedidos, atención automática, WhatsApp y panel del negocio.">
-  <link rel="stylesheet" href="styles.css?v=1.0.1">
+  <meta name="description" content="Demo comercial de Zenix Gastronomía: web, pedidos, IA asistida, motor de reglas, WhatsApp y panel del negocio.">
+  <link rel="stylesheet" href="styles.css?v=1.1.0">
+  <link rel="stylesheet" href="enhancements.css?v=1.1.0">
 </head>
 <body>
   <header class="site-header">
@@ -31,7 +32,7 @@
         <div class="hero-copy">
           <p class="eyebrow">DEMO COMERCIAL · ZENIX AR</p>
           <h1>Comida casera.<br><em>Pedidos sin vueltas.</em></h1>
-          <p class="lead">Rotisería ficticia creada para demostrar un sistema real de ventas: menú con precios, carrito, atención automática, cálculo de totales, confirmación y envío por WhatsApp.</p>
+          <p class="lead">Rotisería ficticia creada para demostrar el sistema Zenix Gastronomía: menú, carrito, IA para interpretar lenguaje, reglas determinísticas, confirmación, WhatsApp y panel.</p>
           <div class="hero-actions">
             <a class="button primary" href="#menu">Ver menú</a>
             <a class="button light" href="https://wa.me/542901535229?text=Hola%20Fuego%20Sur" target="_blank" rel="noopener">WhatsApp · 2901 535229</a>
@@ -50,10 +51,10 @@
 
     <section class="trust-strip">
       <div class="shell trust-grid">
-        <div><b>Precios claros</b><span>Totales calculados por software</span></div>
-        <div><b>Pedido confirmado</b><span>Nada se registra sin aprobación</span></div>
-        <div><b>WhatsApp real</b><span>Contacto: +54 2901 535229</span></div>
-        <div><b>Control humano</b><span>Derivación cuando haga falta</span></div>
+        <div><b>IA interpreta</b><span>Entiende lenguaje natural</span></div>
+        <div><b>Software decide</b><span>Precios, total y estados</span></div>
+        <div><b>Confirmación obligatoria</b><span>Nada se registra antes</span></div>
+        <div><b>Control humano</b><span>Derivación cuando corresponde</span></div>
       </div>
     </section>
 
@@ -71,18 +72,20 @@
         <div class="order-copy">
           <p class="eyebrow">TU PEDIDO</p>
           <h2>El total se calcula solo.</h2>
-          <p>Las cantidades, precios, delivery y total salen de reglas configuradas. El asistente puede entender lo que escribís, pero no puede inventar valores.</p>
-          <div class="order-example"><small>PROBÁ DESPUÉS EN EL ASISTENTE</small><strong>“Quiero 2 empanadas de carne y 1 pizza muzzarella”</strong></div>
+          <p>La IA puede interpretar lo que escribís, pero cantidades finales, precios, delivery, total y estados salen del motor de reglas.</p>
+          <div class="order-example"><small>PROBÁ EN EL ASISTENTE</small><strong>“Quiero 2 empanadas de carne y 1 pizza muzzarella”</strong></div>
         </div>
         <aside class="cart-card">
           <div class="cart-head"><div><small>PEDIDO ACTUAL</small><h3><span id="cartCount">0</span> productos</h3></div><button id="clearCart" class="text-button" type="button">Vaciar</button></div>
           <div id="cartList" class="cart-list"></div>
-          <label class="field"><span>Nombre</span><input id="customerName" maxlength="60" placeholder="Tu nombre"></label>
+          <label class="field"><span>Nombre *</span><input id="customerName" maxlength="60" minlength="2" autocomplete="name" placeholder="Nombre para identificar el pedido" required></label>
+          <p class="field-help">Obligatorio para confirmar.</p>
           <label class="field"><span>Modalidad</span><select id="orderMode"><option value="retiro">Retiro en el local</option><option value="delivery">Delivery (+ $2.500)</option></select></label>
           <label class="field"><span>Aclaraciones</span><textarea id="orderNotes" maxlength="250" rows="3" placeholder="Ej: sin cebolla, tocar timbre..."></textarea></label>
           <div class="totals"><div><span>Productos</span><b id="subtotal">$0</b></div><div><span>Delivery</span><b id="deliveryCost">$0</b></div><div class="grand"><span>Total</span><strong id="grandTotal">$0</strong></div></div>
           <button id="registerOrder" class="button primary full" type="button" disabled>Confirmar pedido</button>
-          <p class="fineprint">Al confirmar, el pedido se registra, se abre WhatsApp y este formulario se limpia para evitar envíos duplicados.</p>
+          <div id="orderConfirmation" class="order-confirmation" hidden></div>
+          <p class="fineprint">Al confirmar, se genera un código único, el pedido se registra, se abre WhatsApp y el formulario se limpia para evitar duplicados.</p>
         </aside>
       </div>
     </section>
@@ -90,13 +93,13 @@
     <section class="assistant-section" id="asistente">
       <div class="shell assistant-grid">
         <div class="assistant-copy">
-          <p class="eyebrow">ATENCIÓN AUTOMÁTICA</p>
-          <h2>Escribí como escribiría un cliente.</h2>
-          <p>El sistema interpreta productos y cantidades, consulta el catálogo configurado y actualiza el pedido. Si detecta un reclamo o pedido de ayuda, deriva a una persona.</p>
+          <p class="eyebrow">IA ASISTIDA</p>
+          <h2>La IA entiende. El software valida.</h2>
+          <p>El agente interpreta intención, productos y cantidades. Después el motor consulta el catálogo y aplica las reglas. Ante ambigüedad, reclamo o pedido explícito, deriva a una persona.</p>
           <div class="chips"><button data-prompt="Quiero 2 empanadas de carne y 1 pizza muzzarella">Probar pedido</button><button data-prompt="¿Cuánto sale el pollo al spiedo?">Consultar precio</button><button data-prompt="Quiero hablar con una persona">Derivación humana</button></div>
         </div>
         <div class="chat-card">
-          <div class="chat-head"><div><span class="online-dot"></span><div><small>ASISTENTE</small><strong>Fuego Sur</strong></div></div><button id="resetChat" class="text-button">Reiniciar</button></div>
+          <div class="chat-head"><div><span class="online-dot"></span><div><small>ASISTENTE · <span id="agentMode">Comprobando modo…</span></small><strong>Fuego Sur</strong></div></div><button id="resetChat" class="text-button">Reiniciar</button></div>
           <div class="chat-log" id="chatLog" aria-live="polite"></div>
           <form id="chatForm" class="chat-form"><input id="chatInput" autocomplete="off" maxlength="220" placeholder="Ej: 2 empanadas de carne y una pizza muzza"><button>Enviar</button></form>
         </div>
@@ -106,11 +109,22 @@
     <section class="section shell" id="panel">
       <div class="section-heading panel-heading">
         <div><p class="eyebrow dark">VISTA DEL NEGOCIO</p><h2>Panel de pedidos.</h2></div>
-        <div class="metrics"><span><b id="metricOrders">0</b> pedidos</span><span><b id="metricPending">0</b> pendientes</span><span><b id="metricRevenue">$0</b> facturación demo</span></div>
+        <div class="metrics"><span><b id="metricOrders">0</b> pedidos</span><span><b id="metricPending">0</b> activos</span><span><b id="metricRevenue">$0</b> facturación demo</span></div>
       </div>
       <div class="panel-layout">
         <div class="orders-box"><div id="ordersList" class="orders-list"></div></div>
-        <aside class="rules-box"><small>REGLAS ACTIVAS</small><h3>El software decide</h3><ul><li><span>Empanada carne</span><b>$1.800</b></li><li><span>Delivery</span><b>$2.500</b></li><li><span>Horario</span><b>12–15 / 19–00</b></li><li><span>Confirmación</span><b>Obligatoria</b></li><li><span>Reclamos</span><b>Derivación humana</b></li></ul><p>La conversación puede ser flexible. Los datos comerciales no.</p></aside>
+        <aside class="rules-box">
+          <small>REGLAS ACTIVAS</small>
+          <h3>El software decide</h3>
+          <ul>
+            <li><span>Empanada carne</span><b>$1.800</b></li>
+            <li><span>Delivery</span><b>$2.500</b></li>
+            <li><span>Horario</span><b>12–15 / 19–00</b></li>
+            <li><span>Confirmación</span><b>Obligatoria</b></li>
+            <li><span>Estados</span><b>Pendiente → Entregado</b></li>
+          </ul>
+          <p>La IA interpreta lenguaje. Los datos comerciales y el estado del pedido no se delegan a la IA.</p>
+        </aside>
       </div>
     </section>
 
@@ -119,8 +133,9 @@
     </section>
   </main>
 
-  <footer><div class="shell footer-row"><span>🔥 Fuego Sur Rotisería · negocio ficticio</span><span>Demo Zenix Gastronomía v1.0 · Zenix AR</span></div></footer>
+  <footer><div class="shell footer-row"><span>🔥 Fuego Sur Rotisería · negocio ficticio</span><span>Demo Zenix Gastronomía v1.1 · Zenix AR</span></div></footer>
 
-  <script src="app.js?v=1.0.1" defer></script>
+  <script src="ai-config.js?v=1.1.0"></script>
+  <script src="app.js?v=1.1.0" defer></script>
 </body>
 </html>
