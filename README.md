@@ -8,7 +8,14 @@ Negocio ficticio creado como demostración comercial de **Zenix AR** siguiendo e
 
 La IA sólo interpreta intención, productos, cantidades y necesidad de derivación humana. Precios, delivery, totales, códigos y estados salen de lógica determinística.
 
-El proveedor de IA está desacoplado. La primera implementación preparada es **Cloudflare Workers AI**, pero puede reemplazarse sin rehacer el motor del negocio.
+La estrategia de IA es híbrida y prioriza costo cero:
+
+1. El motor local determinístico intenta resolver primero consultas simples y pedidos claros sin usar IA.
+2. Si el mensaje requiere interpretación, `local-ai.js` intenta usar **WebLLM** directamente en el navegador con el modelo `Qwen2.5-0.5B-Instruct-q4f16_1-MLC` cuando el dispositivo dispone de WebGPU y recursos suficientes.
+3. Si WebLLM no está disponible, falla o queda inseguro, puede usarse **Cloudflare Workers AI** como respaldo si hay un endpoint configurado.
+4. Si tampoco hay IA externa disponible, el sistema conserva el parser local y deriva los casos inciertos a una persona.
+
+El proveedor de IA sigue desacoplado: la lógica comercial no depende de WebLLM ni de Cloudflare.
 
 ## Incluye
 
@@ -22,14 +29,34 @@ El proveedor de IA está desacoplado. La primera implementación preparada es **
 - Panel con estados `Pendiente → Aceptado → Listo → Entregado` y rechazo.
 - Tiempo estimado configurable por el comercio.
 - Historial local de pedidos y eventos de diagnóstico.
-- Backend `/worker` preparado para una IA real mediante Cloudflare Workers AI.
-- Respaldo local si la IA no está disponible.
+- IA local WebLLM cargada sólo cuando hace falta.
+- Backend `/worker` preparado como respaldo mediante Cloudflare Workers AI.
 
-## Estado de IA
+## Configuración de IA
 
-El backend de IA ya está en el repositorio, pero la IA real sólo queda activa cuando el Worker se despliega y su URL se configura en `ai-config.js`.
+`ai-config.js` controla la capa de IA:
 
-Mientras `ai-config.js` tenga `endpoint: ""`, la web informa **Modo respaldo local** y no pretende estar usando IA externa.
+```js
+window.ZENIX_AI_CONFIG = {
+  endpoint: "",
+  localAI: {
+    enabled: true,
+    model: "Qwen2.5-0.5B-Instruct-q4f16_1-MLC",
+    webllmVersion: "0.2.85",
+    minDeviceMemoryGB: 4
+  }
+};
+```
+
+Con `endpoint: ""`, Cloudflare no se usa. WebLLM puede seguir funcionando completamente en el dispositivo compatible.
+
+Si después se despliega el Worker, se coloca su URL en `endpoint`. Cloudflare entonces queda como respaldo para dispositivos sin WebGPU, fallos del modelo local o interpretaciones inciertas.
+
+La primera carga de WebLLM puede tardar porque el navegador debe descargar y guardar el modelo. Las siguientes cargas pueden reutilizar la caché del navegador.
+
+## Validación
+
+La carpeta `worker/tests` contiene 50 casos de prueba para el contrato de interpretación. La Fase A no se considera cerrada hasta ejecutar y revisar las pruebas integradas correspondientes.
 
 ## Aviso
 
@@ -39,4 +66,4 @@ Fuego Sur es un negocio ficticio. Los productos, precios, promociones y horarios
 
 Frontend: GitHub Pages desde `main` y `/`.
 
-Backend de IA: ver `worker/README.md`.
+Backend opcional de respaldo: ver `worker/README.md`.
