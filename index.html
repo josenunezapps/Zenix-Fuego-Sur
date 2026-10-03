@@ -6,7 +6,7 @@
   <meta name="theme-color" content="#14110f">
   <title>Fuego Sur Rotisería | Demo Zenix AR</title>
   <meta name="description" content="Demo comercial de Zenix Gastronomía aplicada a una rotisería ficticia: menú, pedidos, atención automática, WhatsApp y panel del negocio.">
-  <link rel="stylesheet" href="styles.css?v=1.0.0">
+  <link rel="stylesheet" href="styles.css?v=1.0.1">
 </head>
 <body>
   <header class="site-header">
@@ -81,9 +81,8 @@
           <label class="field"><span>Modalidad</span><select id="orderMode"><option value="retiro">Retiro en el local</option><option value="delivery">Delivery (+ $2.500)</option></select></label>
           <label class="field"><span>Aclaraciones</span><textarea id="orderNotes" maxlength="250" rows="3" placeholder="Ej: sin cebolla, tocar timbre..."></textarea></label>
           <div class="totals"><div><span>Productos</span><b id="subtotal">$0</b></div><div><span>Delivery</span><b id="deliveryCost">$0</b></div><div class="grand"><span>Total</span><strong id="grandTotal">$0</strong></div></div>
-          <button id="registerOrder" class="button primary full" type="button" disabled>Confirmar y registrar pedido</button>
-          <button id="sendWhatsapp" class="button whatsapp full" type="button" disabled>Enviar por WhatsApp</button>
-          <p class="fineprint">Demo: el pedido se guarda solamente en este navegador.</p>
+          <button id="registerOrder" class="button primary full" type="button" disabled>Confirmar pedido</button>
+          <p class="fineprint">Al confirmar, el pedido se registra, se abre WhatsApp y este formulario se limpia para evitar envíos duplicados.</p>
         </aside>
       </div>
     </section>
@@ -122,6 +121,6 @@
 
   <footer><div class="shell footer-row"><span>🔥 Fuego Sur Rotisería · negocio ficticio</span><span>Demo Zenix Gastronomía v1.0 · Zenix AR</span></div></footer>
 
-  <script src="app.js?v=1.0.0" defer></script>
+  <script src="app.js?v=1.0.1" defer></script>
 </body>
 </html>
