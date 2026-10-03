@@ -6,8 +6,8 @@
   <meta name="theme-color" content="#14110f">
   <title>Fuego Sur Rotisería | Demo Zenix AR</title>
   <meta name="description" content="Demo comercial de Zenix Gastronomía: web, pedidos, IA asistida, motor de reglas, WhatsApp y panel del negocio.">
-  <link rel="stylesheet" href="styles.css?v=1.1.0">
-  <link rel="stylesheet" href="enhancements.css?v=1.1.0">
+  <link rel="stylesheet" href="styles.css?v=1.2.0">
+  <link rel="stylesheet" href="enhancements.css?v=1.2.0">
 </head>
 <body>
   <header class="site-header">
@@ -95,7 +95,7 @@
         <div class="assistant-copy">
           <p class="eyebrow">IA ASISTIDA</p>
           <h2>La IA entiende. El software valida.</h2>
-          <p>El agente interpreta intención, productos y cantidades. Después el motor consulta el catálogo y aplica las reglas. Ante ambigüedad, reclamo o pedido explícito, deriva a una persona.</p>
+          <p>Primero Zenix intenta resolver la consulta con reglas locales sin gastar IA. Si hace falta interpretar lenguaje más ambiguo, usa WebLLM directamente en el dispositivo cuando hay WebGPU; Cloudflare queda como respaldo opcional.</p>
           <div class="chips"><button data-prompt="Quiero 2 empanadas de carne y 1 pizza muzzarella">Probar pedido</button><button data-prompt="¿Cuánto sale el pollo al spiedo?">Consultar precio</button><button data-prompt="Quiero hablar con una persona">Derivación humana</button></div>
         </div>
         <div class="chat-card">
@@ -133,9 +133,10 @@
     </section>
   </main>
 
-  <footer><div class="shell footer-row"><span>🔥 Fuego Sur Rotisería · negocio ficticio</span><span>Demo Zenix Gastronomía v1.1 · Zenix AR</span></div></footer>
+  <footer><div class="shell footer-row"><span>🔥 Fuego Sur Rotisería · negocio ficticio</span><span>Demo Zenix Gastronomía v1.2 · Zenix AR</span></div></footer>
 
-  <script src="ai-config.js?v=1.1.0"></script>
-  <script src="app.js?v=1.1.0" defer></script>
+  <script src="ai-config.js?v=1.2.0"></script>
+  <script src="app.js?v=1.2.0" defer></script>
+  <script src="local-ai.js?v=1.2.0" defer></script>
 </body>
 </html>
