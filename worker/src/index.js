@@ -2,6 +2,7 @@ import { PRODUCTS, ALLOWED_INTENTS } from "./catalog.js";
 import { interpretMessage } from "./providers/index.js";
 
 const MAX_MESSAGE_LENGTH = 500;
+const SERVICE_VERSION = "1.0.1";
 
 function corsHeaders(origin, env) {
   const allowed = env.ALLOWED_ORIGIN || "https://josenunezapps.github.io";
@@ -50,8 +51,13 @@ export default {
       return new Response(null, { status: 204, headers: corsHeaders(origin, env) });
     }
 
-    if (request.method === "GET" && url.pathname === "/health") {
-      return json({ ok: true, service: "zenix-fuego-sur-ai", provider: env.AI_PROVIDER || "cloudflare" }, 200, origin, env);
+    if (request.method === "GET" && (url.pathname === "/" || url.pathname === "/health")) {
+      return json({
+        ok: true,
+        service: "zenix-fuego-sur-ai",
+        version: SERVICE_VERSION,
+        provider: env.AI_PROVIDER || "cloudflare"
+      }, 200, origin, env);
     }
 
     if (request.method !== "POST" || url.pathname !== "/interpret") {
