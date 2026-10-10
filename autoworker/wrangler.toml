@@ -1,0 +1,13 @@
+name = "zenix-autoworker"
+main = "src/worker.js"
+compatibility_date = "2026-10-01"
+[assets]
+directory = "./public"
+binding = "ASSETS"
+run_worker_first = ["/api/*"]
+[[d1_databases]]
+binding = "DB"
+database_name = "zenix-autoworker"
+database_id = "REPLACE_WITH_YOUR_D1_DATABASE_ID"
+[triggers]
+crons = ["0 */6 * * *"]
