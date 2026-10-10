@@ -1,27 +1,31 @@
-# Zenix AutoWorker Web
+# Zenix AutoWorker Web — rama independiente
 
-Rama independiente para desarrollar Zenix AutoWorker (Cloudflare Workers + D1).
+Esta rama contiene una **base funcional** de la versión web en la carpeta `autoworker/`. No altera el sitio Fuego del Sur ni su rama `main`.
 
-## Estado
+## Funciones implementadas
+- Panel web responsive.
+- API protegida por `ADMIN_TOKEN`.
+- Registro y edición de oportunidades, borradores y estados en D1.
+- Búsqueda periódica de issues de GitHub (sus pagos **no** se verifican).
+- Estados de aprobación: se registran, **no** se envían candidaturas ni entregas.
+- Historial de cambios.
 
-Se creó esta rama para no modificar el sitio Fuego del Sur. **La aplicación aún no está publicada ni se han subido a esta rama los archivos completos de la versión 1.0.** Los archivos fuente están disponibles en el ZIP entregado en la conversación.
+**No implementado todavía:** agente autónomo que programe trabajos, postulaciones automáticas, ingresos ni cobros. No se ha desplegado la web.
 
-## Subir el código del ZIP
+## Publicar en Cloudflare
 
-1. Descargar `Zenix_AutoWorker_Web_v1.0_Cloudflare.zip` desde el chat y extraerlo.
-2. Abrir esta rama en GitHub y seleccionar **Add file → Upload files**.
-3. Subir desde la carpeta descomprimida: `src/worker.js`, `public/index.html`, `schema.sql`, `package.json`, `wrangler.toml` y `.gitignore` (conservar rutas).
-4. Antes de publicar, configurar D1 y el secreto `ADMIN_TOKEN` en Cloudflare siguiendo el README incluido en el ZIP.
+1. Descargar el repositorio seleccionando la rama `zenix-autoworker-web` o clonar esa rama.
+2. Abrir una terminal en `autoworker/` e instalar Node.js LTS.
+3. Ejecutar `npm install` y `npx wrangler login`.
+4. Ejecutar `npx wrangler d1 create zenix-autoworker`.
+5. Sustituir `REPLACE_WITH_YOUR_D1_DATABASE_ID` en `wrangler.toml` por el ID real.
+6. Ejecutar `npm run db:remote`.
+7. Ejecutar `npx wrangler secret put ADMIN_TOKEN` e ingresar un secreto único de 32 caracteres o más. **No subirlo a GitHub**.
+8. Ejecutar `npm run deploy`.
+9. Abrir el enlace de Cloudflare y autenticarse con ese secreto.
 
-No subir contraseñas ni `.env`, `.dev.vars` o `node_modules`. La rama **no es privada**: pertenece a un repositorio público. Una ruta oculta tampoco sustituye la autenticación.
+Para desarrollo local: `npm run db:local`, definir `ADMIN_TOKEN` en `.dev.vars` y ejecutar `npm run dev`.
 
-## Arquitectura
+El repositorio Fuego del Sur es **público**: la rama también lo es. No colocar secretos ni información privada de clientes en el repositorio. Una ruta oculta no equivale a control de acceso.
 
-- Cloudflare Worker para API autenticada y búsqueda periódica.
-- Cloudflare D1 para oportunidades y aprobaciones.
-- Archivos estáticos para panel web.
-- Ejecutor de programación autónoma: fase posterior (no implementado).
-
-## Advertencia
-
-No se ha vinculado esta rama a un despliegue. No alterar la rama `main` del sitio Fuego del Sur al publicar AutoWorker.
+Si querés evitar cualquier dependencia del repositorio de Fuego del Sur, más adelante conviene migrar esta carpeta a un repositorio privado exclusivo.
