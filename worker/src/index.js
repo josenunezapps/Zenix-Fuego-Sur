@@ -1,4 +1,5 @@
 import { PRODUCTS, ALLOWED_INTENTS } from "./catalog.js";
+import { handleObraAsk } from "./obra.js";
 import { interpretMessage } from "./providers/index.js";
 
 const MAX_MESSAGE_LENGTH = 500;
@@ -46,6 +47,9 @@ export default {
   async fetch(request, env) {
     const origin = request.headers.get("Origin") || "";
     const url = new URL(request.url);
+
+    // Independent contractor assistant. The original restaurant endpoints stay unchanged.
+    if(url.pathname === "/obra/ask") return handleObraAsk(request, env);
 
     if (request.method === "OPTIONS") {
       return new Response(null, { status: 204, headers: corsHeaders(origin, env) });
